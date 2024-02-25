@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class DungeonGeneration : MonoBehaviour
@@ -9,6 +8,7 @@ public class DungeonGeneration : MonoBehaviour
     private const int maxSize = 30;
     public List<Room> rooms = new List<Room>();
     private Room rootRoom = new Room(0, 0, 80, 50);
+    System.Random rnd = new System.Random();
 
     void Start()
     {
@@ -23,29 +23,20 @@ public class DungeonGeneration : MonoBehaviour
             {
                 if (room.left == null && room.right == null)
                 {
-                    if (room.rWidth > maxSize || room.rHeight > maxSize || UnityEngine.Random.Range((float)0.1, 1) > 0.25)
+                    if (room.rWidth > maxSize || room.rHeight > maxSize || rnd.Next(1, 10) > 2.5)
                     {
-                        bool test = room.Split();
-                        if (test)
+                        if (room.Split())
                         {
-                            
                             rooms.Add(room.left);
                             rooms.Add(room.right);
                             roomSplit = true;
                         }
-                        Debug.Log(roomSplit);
                     }
                 }
             }
-        } while (counter < 100);
+        } while (roomSplit);
         rootRoom.CreateRooms();
-        //foreach (Room room in rooms)
-        //{
-        //    Debug.Log(room.x);
-        //    Debug.Log(room.y);
-        //    Debug.Log(string.Format("width {0}, height {1}", room.rWidth, room.rHeight));
-        //    Debug.Log("\n");
-        //}
+
     }
 
 }
