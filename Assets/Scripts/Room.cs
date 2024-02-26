@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 
 public class Room
 {
-    private const int minSize = 14;
+    private const int minSize = 20;
 
     public int rHeight, rWidth, x, y;
     public Room left, right;
@@ -34,7 +34,6 @@ public class Room
 
     public bool Split()
     {
-        rand.Next();
         bool splitVertical = (rand.Next(1, 10) > 5);
         if (left != null || right != null)
         {
@@ -107,11 +106,11 @@ public class Room
         }
         else
         {
-            Vector2 roomSize = new Vector2(rand.Next(3, rWidth - 2), rand.Next(3, rHeight - 2));
-            Vector2 roomPos = new Vector2(rand.Next(1, rWidth - (int)roomSize.x - 1), rand.Next(1, rHeight - (int)roomSize.y - 1));
+            Vector2 roomSize = new Vector2(rand.Next(5, rWidth - 3), rand.Next(5, rHeight - 3));
+            Vector2 roomPos = new Vector2(rand.Next(2, rWidth - (int)roomSize.x - 2), rand.Next(2, rHeight - (int)roomSize.y - 2));
             plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.transform.position = new Vector3(x + roomPos.x, 0, y + roomPos.y);
-            plane.transform.localScale = new Vector3(roomSize.x / 11, 1, roomSize.y / 11);
+            plane.transform.position = new Vector3((x + roomPos.x) * 10, 0, (y + roomPos.y) * 10);
+            plane.transform.localScale = new Vector3(roomSize.x , 1, roomSize.y );
         }
     }
 
@@ -157,14 +156,19 @@ public class Room
 
     public void CreateCorridor(GameObject l, GameObject r)
     {
-        //Debug.Log("i work first");
         corridors = new List<GameObject>();
 
-        Vector2 p1 = new Vector2(rand.Next((int)l.transform.position.x + 1, (int)GetRight(l) - 2), rand.Next((int)l.transform.position.z + 1, (int)GetTop(l) - 2));
-        Vector2 p2 = new Vector2(rand.Next((int)r.transform.position.x + 1, (int)GetRight(r) - 2), rand.Next((int)r.transform.position.z + 1, (int)GetTop(r) - 2));
+        Vector2 p1 = new Vector2(rand.Next((int)GetLeft(l) + 1, (int)GetRight(l) - 2), rand.Next((int)GetBottom(l) + 1, (int)GetTop(l) - 2));
+        Vector2 p2 = new Vector2(rand.Next((int)GetLeft(r) + 1, (int)GetRight(r) - 2), rand.Next((int)GetBottom(r) + 1, (int)GetTop(r) - 2));
+        //Debug.Log(String.Format("The l x; {0}, y: {1}", l.transform.position.x, l.transform.position.z));
+        //Debug.Log(String.Format("The r x; {0}, y: {1}", r.transform.position.x, r.transform.position.z));
+        //Debug.Log(String.Format("The p1.x: {0}, p1.y {1}", p1.x, p1.y));
+        //Debug.Log(String.Format("The p2.x: {0}, p2.y {1}", p2.x, p2.y));
 
-        float w = (p2.x - p1.x) / 44;
-        float h = (p2.y - p1.y) / 44;
+        float w = (p2.x - p1.x);
+        float h = (p2.y - p1.y);
+  
+        
 
         if (w < 0)
         {
@@ -250,41 +254,53 @@ public class Room
     {
         Mesh mesh = p.GetComponent<MeshFilter>().mesh;
         Bounds bounds = mesh.bounds;
-        //Debug.Log(String.Format("The xBound vibes: {0}", bounds.size.x));
-        //Debug.Log(String.Format("The xPos vibes: {0}", p.transform.position.x));
-        return p.transform.position.x + bounds.max.x;
+        return p.transform.position.x + bounds.extents.x;
     }
 
     private float GetTop(GameObject p)
     {
         Mesh mesh = p.GetComponent<MeshFilter>().mesh;
         Bounds bounds = mesh.bounds;
-        //Debug.Log(String.Format("The zBound vibes: {0}", bounds.size.z));
-        //Debug.Log(String.Format("The zPos vibes: {0}", p.transform.position.z));
-        return (int)p.transform.position.z + bounds.max.z;
+        return (int)p.transform.position.z + bounds.extents.z;
     }
 
-    private GameObject GetPlaneObj(float p1, float p2, float p3, float p4)
+    private float GetLeft(GameObject p)
     {
-        //Debug.Log("I am working!");
+        Mesh mesh = p.GetComponent<MeshFilter>().mesh;
+        Bounds bounds = mesh.bounds;
+        return p.transform.position.x - bounds.extents.x;
+    }
+
+    private float GetBottom(GameObject p)
+    {
+        Mesh mesh = p.GetComponent<MeshFilter>().mesh;
+        Bounds bounds = mesh.bounds;
+        return p.transform.position.z - bounds.extents.z;
+    }
+
+    private GameObject GetPlaneObj(float p1, float p2, float w, float h)
+    {
         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
         ChangePlaneColor(plane, UnityEngine.Color.green);
         plane.transform.position = new Vector3(p1, 0, p2);
-        plane.transform.localScale = new Vector3(p3, 1, p4);
+        if (w > h)
+        {
+            w /= 5;
+            h /= 2;
+        } else if (h > w)
+        {
+            h /= 5;
+            w /= 2;
+        }
+        Debug.Log(String.Format("The w; {0}, h: {1}", w, h));
+        plane.transform.localScale = new Vector3(w, 1, h);
         return plane;
     }
     void ChangePlaneColor(GameObject plane, UnityEngine.Color color)
     {
-        // Access the Renderer component
         Renderer planeRenderer = plane.GetComponent<Renderer>();
-
-        // Create a new material to avoid modifying the shared material
         Material newMaterial = new Material(planeRenderer.sharedMaterial);
-
-        // Set the color of the new material
         newMaterial.color = color;
-
-        // Assign the new material to the plane
         planeRenderer.material = newMaterial;
     }
 }

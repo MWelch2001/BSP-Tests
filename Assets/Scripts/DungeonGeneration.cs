@@ -7,17 +7,15 @@ public class DungeonGeneration : MonoBehaviour
 {
     private const int maxSize = 30;
     public List<Room> rooms = new List<Room>();
-    private Room rootRoom = new Room(0, 0, 80, 50);
+    private Room rootRoom = new Room(0, 0, 100, 100);
     System.Random rnd = new System.Random();
 
     void Start()
     {
-        int counter = 0;
         bool roomSplit = true;
         rooms.Add(rootRoom);
         do
         {
-            counter += 1;
             roomSplit = false;
             foreach (Room room in rooms.ToArray())
             {
@@ -36,7 +34,6 @@ public class DungeonGeneration : MonoBehaviour
             }
         } while (roomSplit);
         rootRoom.CreateRooms();
-
     }
 
 }
