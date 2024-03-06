@@ -110,7 +110,7 @@ public class Room
             Vector2 roomPos = new Vector2(rand.Next(2, rWidth - (int)roomSize.x - 2), rand.Next(2, rHeight - (int)roomSize.y - 2));
             plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
             plane.transform.position = new Vector3((x + roomPos.x) * 10, 0, (y + roomPos.y) * 10);
-            plane.transform.localScale = new Vector3(roomSize.x , 1, roomSize.y );
+            plane.transform.localScale = new Vector3(roomSize.x, 1, roomSize.y);
         }
     }
 
@@ -167,8 +167,8 @@ public class Room
 
         float w = (p2.x - p1.x);
         float h = (p2.y - p1.y);
-  
-        
+
+
 
         if (w < 0)
         {
@@ -287,7 +287,8 @@ public class Room
         {
             w /= 5;
             h /= 2;
-        } else if (h > w)
+        }
+        else if (h > w)
         {
             h /= 5;
             w /= 2;

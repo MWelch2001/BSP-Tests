@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Room
   layers:
   - Default
   - TransparentFX
@@ -38,6 +39,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Plane
+    uniqueID: 3303821387
+    locked: 0
+  - name: Tile
+    uniqueID: 2196461101
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
